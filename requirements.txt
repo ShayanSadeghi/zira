@@ -7,8 +7,8 @@
 dnspython==2.7.0
     # via pymongo
 motor==3.6.0
-    # via omni_log (pyproject.toml)
+    # via zira (pyproject.toml)
 pymongo==4.9.2
     # via motor
 python-dotenv==1.0.1
-    # via omni_log (pyproject.toml)
+    # via zira (pyproject.toml)
