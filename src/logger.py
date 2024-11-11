@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from bson import ObjectId
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import PyMongoError
 
 
 class CustomJSONEncoder(json.JSONEncoder):
@@ -16,7 +17,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-class OmniLog:
+class Logger:
     # TODO: Different DBs
     def __init__(
         self,
@@ -72,7 +73,7 @@ class OmniLog:
 
         try:
             await self.collection.insert_one(data)
-        except:
+        except PyMongoError:
             if self.fallback_dir:
                 self._log_to_local_fallback(data)
             else:
