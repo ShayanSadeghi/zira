@@ -10,7 +10,7 @@ Currently this package try to log on a mongo db using mongo URI.
 pip install zira
 ```
 
-### logging
+### Logging
 
 ```python
 import asyncio
@@ -30,4 +30,16 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+```
+
+
+### Syncing
+
+To sync logs, that stored on local storage due to any interrupt of database connection, use the Sync class:
+
+```python
+from src.sync import Sync
+
+zira_sync = Sync(db_name="test_zira_log", sync_interval=3600) #run every hour
+await zira_sync.start_sync()
 ```
