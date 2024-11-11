@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="zira",
-    version="0.1.0",
+    version="0.1.1",
     author="Shayan Sadeghi",
     author_email="ShayanSadeghi1996@gmail.com",
     description="Async logging system with local caching and syncing system",

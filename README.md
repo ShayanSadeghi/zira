@@ -16,7 +16,7 @@ pip install zira
 ```python
 import asyncio
 
-from Zira.logger import ZiraLog 
+from zira.logger import ZiraLog 
 
 async def main():
    zira = ZiraLog(service_name="TestService", db_name="test_zira_log")
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 If database connectivity is interrupted, use the `Sync` class to periodically sync stored logs with MongoDB.
 
 ```python
-from src.sync import Sync
+from zira.sync import Sync
 
 zira_sync = Sync(db_name="test_zira_log", sync_interval=3600) #run every hour
 await zira_sync.start_sync()
