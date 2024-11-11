@@ -1,14 +1,15 @@
-# Zira
+# Zira: Enhanced Event Tracking for Logging in Python
 
-Zira will help you during the logging process. 
+Zira designed to help developers efficiently track and understand the root cause of various events. It supports logging directly to MongoDB and offers local storage fallback if database connectivity is interrupted. Zira then syncs logs automatically once the database connection is restored, ensuring no data is lost.
 
-Currently this package try to log on a mongo db using mongo URI.
-
-## Use Case Example
+## Installation
 
 ```bash
 pip install zira
 ```
+
+## Use Case Example
+
 
 ### Logging
 
@@ -35,7 +36,7 @@ if __name__ == "__main__":
 
 ### Syncing
 
-To sync logs, that stored on local storage due to any interrupt of database connection, use the Sync class:
+If database connectivity is interrupted, use the `Sync` class to periodically sync stored logs with MongoDB.
 
 ```python
 from src.sync import Sync
