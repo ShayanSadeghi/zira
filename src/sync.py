@@ -12,10 +12,10 @@ class Sync:
     def __init__(
         self,
         mongoURI=None,
-        db_name="omni_logs",
+        db_name="zira_logs",
         collection="logs",
         fallback_dir="cache_logs",
-        sync_interval=3600,
+        sync_interval=10,
     ):
         load_dotenv()
 
@@ -43,8 +43,8 @@ class Sync:
                 except IOError as e:
                     print(f"Error reading local fallback log file: {e}")
 
-    def start_sync(self):
-        self._sync_task = asyncio.run(self._periodic_sync())
+    async def start_sync(self):
+        await asyncio.create_task(self._periodic_sync())
 
     async def _periodic_sync(self):
         while True:
