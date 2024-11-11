@@ -47,28 +47,25 @@ class ZiraLog:
         await self._log(f"{message} Finished", context)
 
     async def error(self, message="", context=None):
-        await self._log(log_level="CRITICAL", message=message, context=context)
+        caller_info = self._get_caller_info()
+        detailed_context = context or {}
+        detailed_context = {**detailed_context, "caller_info": caller_info}
+        await self._log(
+            log_level="CRITICAL",
+            message=message,
+            context=detailed_context,
+        )
 
     async def warning(self, message="", context=None):
         await self._log(log_level="WARNING", message=message, context=context)
 
     async def _log(self, log_level="INFO", message="", context=None):
-        stack = inspect.stack()
-        caller_frame = stack[2]
-
-        caller_info = {
-            "function_name": caller_frame.f_code.co_name,
-            "file_name": caller_frame.f_code.co_filename,
-            "line_number": caller_frame.f_lineno,
-        }
-
         data = {
             "log_level": log_level,
             "message": message,
             "task_id": self.task_id,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "service_name": self.service_name,
-            "caller_info": caller_info,
             "context": context or {},
         }
 
@@ -88,3 +85,16 @@ class ZiraLog:
             print(f"Saved log to local fallback: {file_name}")
         except IOError as e:
             print(f"Failed to write to local fallback file: {e}")
+
+    def _get_caller_info(self):
+        stack = inspect.stack()
+
+        caller_info = [
+            {
+                "function_name": caller_frame.function,
+                "file_name": caller_frame.filename,
+                "line_number": caller_frame.lineno,
+            }
+            for caller_frame in stack
+        ]
+        return caller_info
