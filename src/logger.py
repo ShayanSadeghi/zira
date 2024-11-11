@@ -17,21 +17,21 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-class Logger:
+class ZiraLog:
     # TODO: Different DBs
     def __init__(
         self,
         service_name,
         mongoURI=None,
         task_id=None,
-        db_name="omni_logs",
+        db_name="zira_logs",
         collection="logs",
         fallback_dir="cache_logs",
     ):
         load_dotenv()
         self.service_name = service_name
         self.task_id = task_id if task_id else str(uuid.uuid4())
-        mongoURI = mongoURI or os.getenv("OMNILOG_MONGO")
+        mongoURI = mongoURI or os.getenv("ZIRALOG_MONGO")
         client = AsyncIOMotorClient(mongoURI)
         db = client[db_name]
         self.collection = db[collection]
@@ -41,24 +41,25 @@ class Logger:
             os.makedirs(self.fallback_dir)
 
     async def started(self, message="", context=None):
-        await self._log_with_status("Started", message, context)
+        await self._log(f"{message} Started", context)
 
     async def finished(self, message="", context=None):
-        await self._log_with_status("Finished", message, context)
+        await self._log(f"{message} Finished", context)
 
     async def error(self, message="", context=None):
-        await self.log(log_level="CRITICAL", message=message, context=context)
+        await self._log(log_level="CRITICAL", message=message, context=context)
 
     async def warning(self, message="", context=None):
-        await self.log(log_level="WARNING", message=message, context=context)
+        await self._log(log_level="WARNING", message=message, context=context)
 
-    async def log(self, log_level="INFO", message="", context=None):
-        frame = inspect.currentframe().f_back
+    async def _log(self, log_level="INFO", message="", context=None):
+        stack = inspect.stack()
+        caller_frame = stack[2]
 
         caller_info = {
-            "function_name": frame.f_code.co_name,
-            "file_name": frame.f_code.co_filename,
-            "line_number": frame.f_lineno,
+            "function_name": caller_frame.f_code.co_name,
+            "file_name": caller_frame.f_code.co_filename,
+            "line_number": caller_frame.f_lineno,
         }
 
         data = {
@@ -67,7 +68,7 @@ class Logger:
             "task_id": self.task_id,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "service_name": self.service_name,
-            **caller_info,
+            "caller_info": caller_info,
             "context": context or {},
         }
 
@@ -87,6 +88,3 @@ class Logger:
             print(f"Saved log to local fallback: {file_name}")
         except IOError as e:
             print(f"Failed to write to local fallback file: {e}")
-
-    async def _log_with_status(self, status, message, context):
-        await self.log(message=f"{message} {status}", context=context)

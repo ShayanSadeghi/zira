@@ -19,7 +19,7 @@ class Sync:
     ):
         load_dotenv()
 
-        self.mongoURI = mongoURI or os.getenv("OMNILOG_MONGO")
+        self.mongoURI = mongoURI or os.getenv("ZIRALOG_MONGO")
         self.client = AsyncIOMotorClient(self.mongoURI)
         self.db = self.client[db_name]
         self.collection = self.db[collection]

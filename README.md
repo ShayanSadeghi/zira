@@ -1,13 +1,13 @@
-# OLLO
+# Zira
 
-OLLO will help you during the logging process. 
+Zira will help you during the logging process. 
 
 Currently this package try to log on a mongo db using mongo URI.
 
 ## Use Case Example
 
 ```bash
-pip install ollo
+pip install zira
 ```
 
 ### logging
@@ -15,16 +15,16 @@ pip install ollo
 ```python
 import asyncio
 
-from OllO.logger import Logger 
+from Zira.logger import ZiraLog 
 
 async def main():
-   ollo = Logger(service_name="TestService", db_name="test_omni_log")
+   zira = ZiraLog(service_name="TestService", db_name="test_zira_log")
 
    log_tasks = []
-   log_tasks.append(ollo.started(message="Test log message"))
-   log_tasks.append(ollo.warning(message="Warning message"))
-   log_tasks.append(ollo.error(message="Error message"))
-   log_tasks.append(ollo.finished(message="Error message"))
+   log_tasks.append(zira.started(message="Test 1"))
+   log_tasks.append(zira.warning(message="Test 2"))
+   log_tasks.append(zira.error(message="Test 3"))
+   log_tasks.append(zira.finished(message="Test 4"))
 
    await asyncio.gather(*log_tasks)
 
