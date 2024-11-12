@@ -41,10 +41,10 @@ class ZiraLog:
             os.makedirs(self.fallback_dir)
 
     async def started(self, message="", context=None):
-        await self._log(f"{message} Started", context)
+        await self._log(message=f"{message} Started", context=context)
 
     async def finished(self, message="", context=None):
-        await self._log(f"{message} Finished", context)
+        await self._log(message=f"{message} Finished", context=context)
 
     async def error(self, message="", context=None):
         caller_info = self._get_caller_info()
