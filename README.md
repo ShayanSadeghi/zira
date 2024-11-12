@@ -8,6 +8,27 @@ Zira designed to help developers efficiently track and understand the root cause
 pip install zira
 ```
 
+## Important Note:
+To streamline your code, you can specify the `Mongo URI` in a `.env` file as the variable `ZIRALOG_MONGO`:
+
+```python
+# .env
+ZIRALOG_MONGO='mongodb://user:pass@host:port/'
+
+```
+
+Alternatively, you can provide the Mongo URI directly when creating a `ZiraLog` or `Sync` instance:
+
+
+```python
+
+log_db_uri='mongodb://user:pass@host:port/'
+
+zira = ZiraLog(mongoURI=log_db_uri, service_name="TestService", db_name="test_zira_log")
+
+```
+
+
 ## Use Case Example
 
 
