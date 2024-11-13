@@ -23,14 +23,12 @@ class ZiraLog:
         self,
         service_name,
         mongoURI=None,
-        task_id=None,
         db_name="zira_logs",
         collection="logs",
         fallback_dir="cache_logs",
     ):
         load_dotenv()
         self.service_name = service_name
-        self.task_id = task_id if task_id else str(uuid.uuid4())
         mongoURI = mongoURI or os.getenv("ZIRALOG_MONGO")
         client = AsyncIOMotorClient(mongoURI)
         db = client[db_name]
@@ -60,11 +58,12 @@ class ZiraLog:
         await self._log(log_level="WARNING", message=message, context=context)
 
     async def _log(self, log_level="INFO", message="", context=None):
+        utc_time = datetime.now(timezone.utc)
         data = {
             "log_level": log_level,
             "message": message,
-            "task_id": self.task_id,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "datetime": utc_time.isoformat(),
+            "timestamp": utc_time.timestamp(),
             "service_name": self.service_name,
             "context": context or {},
         }
