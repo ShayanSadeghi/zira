@@ -38,24 +38,36 @@ class ZiraLog:
         if not os.path.exists(self.fallback_dir):
             os.makedirs(self.fallback_dir)
 
-    async def started(self, message="", context=None):
-        await self._log(message=f"{message} Started", context=context)
+    async def started(self, message="", context={}):
+        await self._log(
+            message=f"{message} Started", context={**context, "log_status": "start"}
+        )
 
-    async def finished(self, message="", context=None):
-        await self._log(message=f"{message} Finished", context=context)
+    async def finished(self, message="", context={}):
+        await self._log(
+            message=f"{message} Finished", context={**context, "log_status": "finish"}
+        )
 
-    async def error(self, message="", context=None):
+    async def error(self, message="", context={}):
         caller_info = self._get_caller_info()
         detailed_context = context or {}
-        detailed_context = {**detailed_context, "caller_info": caller_info}
+        detailed_context = {
+            **detailed_context,
+            "caller_info": caller_info,
+            "log_status": "error",
+        }
         await self._log(
             log_level="CRITICAL",
             message=message,
             context=detailed_context,
         )
 
-    async def warning(self, message="", context=None):
-        await self._log(log_level="WARNING", message=message, context=context)
+    async def warning(self, message="", context={}):
+        await self._log(
+            log_level="WARNING",
+            message=message,
+            context={**context, "log_status": "warning"},
+        )
 
     async def _log(self, log_level="INFO", message="", context=None):
         utc_time = datetime.now(timezone.utc)
